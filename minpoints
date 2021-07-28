@@ -1,0 +1,57 @@
+<? public static function countrecomend ($point, $r, $points) {
+        $diff=$point+2*$r;
+        $center=$point+$r;
+        $filtered_array = array_filter($points, function ($e) use ($point, $diff) {
+            return $e>=$point && $e<=$diff;
+        });
+
+        if (in_array($center,$points)) {
+
+            $start=$diff;
+        }
+        else {
+
+            $start=$center;
+        }
+        return $start;
+    }
+    public function MinPoints() {
+
+        $recommendcount=0;
+        $N=rand(1, 10**5);
+        $r=rand(1, 10**9);
+        $points = array();
+        for($i=0; $i<$N;$i++) {
+            $ok = false;
+            while(!$ok) {
+                $x=mt_rand(1,10**9);
+                $ok = !in_array($x, $points) && $x != $i;
+            }
+            $points[$i]=$x;
+        }
+        $start_time = microtime(true);
+
+        sort($points);
+
+        $start=$this->countrecomend($points[0],$r, $points);
+        $recommendcount++;
+
+        for ($n=0; $n<count($points); $n++) {
+
+            if ($points[$n]>$start) {
+                $start=$this->countrecomend($points[$n], $r, $points);
+                $recommendcount++;
+               // echo $recommendcount.',';
+            }
+
+        }
+
+        echo '<br>Радиус: '.$r.'<br>';
+        echo 'Кол-во точек: '.$N.'<br>';
+        echo  'Минимальное кол-во рекомендованных точек: '.$recommendcount. '<br>';
+        $time = microtime(true) - $start_time;
+        printf('Скрипт выполнялся %.4F сек.', $time);
+       // print_r($points);
+        echo '<br>';
+    }
+    ?>
